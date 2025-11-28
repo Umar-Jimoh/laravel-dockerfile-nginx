@@ -1,50 +1,49 @@
 # Docker Laravel App Setup Using Dockerfile
 
-📁 Directory Structure
+## 📁 Directory Structure
 
 ```sh
-laravel-dockerfile-nginx/
-├── docker/  
+laravel/                        # Laravel application
+├── docker/                     # Docker folder
 │   ├── nginx/
-│   │   └── default.conf        # NGINX config
+│   │   └── default.conf        # NGINX configuration
+│   ├── php/
+│   │   └── php.ini             # PHP configuration
 │   └── script/
 │   │   └── startup.sh          # Custom startup script
 │   └── supervisor/
-│       └── supervisord.conf    # Supervisor config  
-├── laravel/                    
-│       └── ...                 # Laravel application code
+│       └── supervisord.conf    # Supervisor configuration  
 ├── Dockerfile                  # Instructions to build the Docker image
-├── setup.md                    # Setup instructions for the project
+├── ...                         # Remaining Laravel application code
 ```
 
-⚙️ Steps to Run
+## ⚙️ Steps to Run
 
-1.  Create a Laravel application inside the `laravel/` directory:
+1.  Copy the `docker` folder and `Dockerfile` into an existing Laravel application:
 
-    -   Either create a new Laravel app:
-        `laravel new laravel --force`
+2.  Update the `.env` file in `laravel/`:
 
-    -   Or clone an existing Laravel app:
-        `git clone https://github.com/laravel/laravel.git laravel`
+    -   Use your external database credentials for deployment (SQLite by default).
 
-2.  Update DB config in `laravel/ .env`:
+    -   In the `Dockerfile`, **uncomment the DB support** you need (MySQL/PostgreSQL) and **comment out SQLite** if not used.
 
-    -   Use your external DB credentials for deployment.
+3.  (Optional) If your app has frontend assets (Vue, React, etc.), make sure to **uncomment the `npm_build` line in `docker/script/startup.sh`**.
 
-    -   For local testing, set the host like this:
-        `DB_HOST=host.docker.internal`
+4.  Test locally (optional):  
+    **Replace 'laravel' with your project name**
 
-3.  (Optional) If you're building a web app with frontend assets (Vue/React/etc), make sure to **uncomment** the `npm_build` line in
-    `setup_environment` inside `docker/script/startup.sh`
+    **Build the Docker image.** 
+    ```bash
+    docker build -t laravel
+    ```
 
-4.  To test locally:
+    **Run the image on port 8080 (you can change this)**
+    ```bash
+    docker run -d -p 8080:80 laravel
+    ```
 
-    -   Build the Docker image. 
-        `docker build -t laravel-dockerfile-nginx:latest .`
+    **Access the app at:**   
+    http://localhost:8080
 
-    -   Run the image on port 8080
-        `docker run -d -p 8080:10000 laravel-dockerfile-nginx`
-
-    -   Access the app at: http://localhost:8080
-
-5. Deploy to any hosting provider that supports Dockerfile (e.g render)
+5. Deploy to any hosting provider that supports Dockerfile (e.g., Render)
+    -   Make sure to update database credentials and ports according to your host setup.
