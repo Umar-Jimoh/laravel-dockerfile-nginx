@@ -14,7 +14,7 @@
 - Docker 20+
 
 ## 📦 Installation
-See [SETUP.md](./setup.md) for full instructions.
+See [SETUP.md](./SETUP.md) for full instructions.
 
 ## 🤝 Contributing
 Pull requests and stars are welcome! Feel free to fork and submit ideas or improvements.
