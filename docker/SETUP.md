@@ -10,40 +10,54 @@ laravel/                        # Laravel application
 │   ├── php/
 │   │   └── php.ini             # PHP configuration
 │   └── script/
-│   │   └── startup.sh          # Custom startup script
+│   │   └── startup.sh          # Startup script
 │   └── supervisor/
-│       └── supervisord.conf    # Supervisor configuration  
-├── Dockerfile                  # Instructions to build the Docker image
+│   │    └── supervisord.conf    # Supervisor configuration  
+│   ├── SETUP.md                # SETUP
+├── build_docker.sh             # Build Docker image
+├── deploy_docker.sh            # Run Docker container
+├── Dockerfile                  # Instructions to build Docker image
+├── install_laravel.sh          # Install Laravel in repo root
+├── TEMPLATE_README.md          # Template README
 ├── ...                         # Remaining Laravel application code
 ```
 
 ## ⚙️ Steps to Run
 
-1.  Copy the `docker` folder and `Dockerfile` into an existing Laravel application:
+1.  Install Laravel in the template repo
+```bash
+./install_laravel.sh
+```  
+- Creates a new Laravel project and moves it to the root
+- Preserves the template `README.md` as `TEMPLATE_README.md`
 
-2.  Update the `.env` file in `laravel/`:
+2. Update `.env`
+    - Use your external database credentials (SQLite by default)
+    - In Dockerfile, uncomment the DB support you need (MySQL/PostgreSQL) and comment out SQLite if not used
 
-    -   Use your external database credentials for deployment (SQLite by default).
+3. Optional: Frontend assets
+    - If your app has frontend assets (Vue, React, etc.), uncomment the npm_build line in docker/script/startup.sh
 
-    -   In the `Dockerfile`, **uncomment the DB support** you need (MySQL/PostgreSQL) and **comment out SQLite** if not used.
+4. Build Docker image
+```bash
+./build_docker.sh
+```
+- Optionally, you can provide a custom image name:
+```bash
+./build_docker.sh [image_name]
+```
 
-3.  (Optional) If your app has frontend assets (Vue, React, etc.), make sure to **uncomment the `npm_build` line in `docker/script/startup.sh`**.
+5. Deploy locally
+```bash
+./deploy_docker.sh
+```
+- Optionally, you can provide a custom image name and port:
+```bash
+./deploy_docker.sh [image_name] [port]
+```
+- Runs container on port 8080 by default (change in script if needed)
+- Access app at: http://localhost:8080
 
-4.  Test locally (optional):  
-    **Replace 'laravel' with your project name**
-
-    **Build the Docker image.** 
-    ```bash
-    docker build -t laravel
-    ```
-
-    **Run the image on port 8080 (you can change this)**
-    ```bash
-    docker run -d -p 8080:80 laravel
-    ```
-
-    **Access the app at:**   
-    http://localhost:8080
-
-5. Deploy to any hosting provider that supports Dockerfile (e.g., Render)
-    -   Make sure to update database credentials and ports according to your host setup.
+6. Deploy to hosting provider
+    - Any host that supports Dockerfile (e.g., Render)
+    - Update DB credentials and ports according to host setup
